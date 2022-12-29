@@ -34,9 +34,9 @@ namespace RegisterPersons.Rules.Services
             this.SaveEmails(personRequest.Id, personRequest.Emails);
             this.SaveAddress(personRequest.Id, personRequest.Address);
             person = this.DbContext.People.First(p => p.Id == personRequest.Id);
-            this.DbContext.Entry(person).Reference(c => c.Phones).Load();
-            this.DbContext.Entry(person).Reference(c => c.Emails).Load();
-            this.DbContext.Entry(person).Reference(c => c.Address).Load();
+            this.DbContext.Entry(person).Collection(c => c.Phones).Load();
+            this.DbContext.Entry(person).Collection(c => c.Emails).Load();
+            this.DbContext.Entry(person).Collection(c => c.Address).Load();
 
             return person;
         }
@@ -100,9 +100,9 @@ namespace RegisterPersons.Rules.Services
             ICollection<Person> personList = this.DbContext.People.ToList();
             foreach (Person person in personList)
             {
-                this.DbContext.Entry(person).Reference(c => c.Phones).Load();
-                this.DbContext.Entry(person).Reference(c => c.Emails).Load();
-                this.DbContext.Entry(person).Reference(c => c.Address).Load();
+                this.DbContext.Entry(person).Collection(c => c.Phones).Load();
+                this.DbContext.Entry(person).Collection(c => c.Emails).Load();
+                this.DbContext.Entry(person).Collection(c => c.Address).Load();
             }
 
             return personList;
@@ -115,9 +115,9 @@ namespace RegisterPersons.Rules.Services
             {
                 throw new ConflictException("Person not exist");
             }
-            this.DbContext.Entry(person).Reference(c => c.Phones).Load();
-            this.DbContext.Entry(person).Reference(c => c.Emails).Load();
-            this.DbContext.Entry(person).Reference(c => c.Address).Load();
+            this.DbContext.Entry(person).Collection(c => c.Phones).Load();
+            this.DbContext.Entry(person).Collection(c => c.Emails).Load();
+            this.DbContext.Entry(person).Collection(c => c.Address).Load();
 
             return person;
         }

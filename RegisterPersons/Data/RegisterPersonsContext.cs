@@ -3,7 +3,7 @@ using RegisterPersons.Models;
 
 namespace RegisterPersons.Data
 {
-    public class RegisterPersonsContext : DbContext
+    public partial class RegisterPersonsContext : DbContext
     {
         public RegisterPersonsContext(DbContextOptions<RegisterPersonsContext> options) : base(options)
         { }
