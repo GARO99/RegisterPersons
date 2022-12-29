@@ -36,4 +36,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetService<RegisterPersonsContext>();
+context.Database.EnsureCreated();
+
 app.Run();
