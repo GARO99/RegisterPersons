@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RegisterPersons.Rules.Contracts;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,6 +9,14 @@ namespace RegisterPersons.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
+        private readonly Lazy<IPersonService> LazyPersonService;
+        private IPersonService PersonService => LazyPersonService.Value;
+
+        public PersonController(Lazy<IPersonService> lazyPersonService)
+        {
+            this.LazyPersonService= lazyPersonService;
+        }
+
         // GET: api/<PersonController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -17,7 +26,7 @@ namespace RegisterPersons.Controllers
 
         // GET api/<PersonController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string Get(string id)
         {
             return "value";
         }

@@ -8,9 +8,9 @@ namespace RegisterPersons.Data
         public RegisterPersonsContext(DbContextOptions<RegisterPersonsContext> options) : base(options)
         { }
 
-        public DbSet<Person> Persons { get; set; }
+        public DbSet<Person> People { get; set; }
         public DbSet<Phone> Phones { get; set; }
         public DbSet<Email> Emails { get; set; }
-        public DbSet<Address> Addresss { get; set; }
+        public DbSet<Address> Addresses { get; set; }
     }
 }

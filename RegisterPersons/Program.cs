@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RegisterPersons.Data;
+using RegisterPersons.Rules.Contracts;
+using RegisterPersons.Rules.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Database connection
-builder.Services.AddDbContext<RegisterPersonsContext>(opt => opt.UseInMemoryDatabase(databaseName: builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<RegisterPersonsContext>(opt => opt.UseInMemoryDatabase(databaseName: builder.Configuration.GetConnectionString("DefaultConnection")?? ""));
+//Dependency injection
+builder.Services.AddScoped<IPersonService, PersonService>()
+    .AddScoped(serviceProvider => new Lazy<IPersonService>(() => serviceProvider.GetRequiredService<IPersonService>()));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
