@@ -21,7 +21,7 @@ namespace RegisterPersons.Util.Validator
             RuleFor(p => p.Emails).Must(e => e.Length <= 2).When(p => p.Emails != null).WithMessage("Person cannot have more than two eamils");
             RuleFor(p => p.Address).Must(a => a.Length <= 2).When(p => p.Address != null).WithMessage("Person cannot have more than two Addresses");
             RuleForEach(p => p.Phones).Must(ph => !ph.IsNullOrEmpty()).When(p => p.Phones != null).WithMessage("Phone index: {CollectionIndex}, cannot be null or empty");
-            RuleForEach(p => p.Emails).Must(e => !e.IsNullOrEmpty()).When(p => p.Emails != null).WithMessage("Email index: {CollectionIndex}, cannot be null or empty");
+            RuleForEach(p => p.Emails).Matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$").When(p => p.Emails != null).WithMessage("Email index: {CollectionIndex}, is not a valid email");
             RuleForEach(p => p.Address).Must(a => !a.IsNullOrEmpty()).When(p => p.Address != null).WithMessage("Address index: {CollectionIndex}, cannot be null or empty");
         }
     }
