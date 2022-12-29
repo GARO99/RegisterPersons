@@ -1,7 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
+using RegisterPersons.Models;
 using RegisterPersons.Rules.Contracts;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using RegisterPersons.Util;
+using RegisterPersons.Util.Request;
+using Swashbuckle.AspNetCore.Annotations;
+using System;
 
 namespace RegisterPersons.Controllers
 {
@@ -9,44 +14,62 @@ namespace RegisterPersons.Controllers
     [ApiController]
     public class PersonController : ControllerBase
     {
+        private IValidator<PersonRequest> PersonValidator;
         private readonly Lazy<IPersonService> LazyPersonService;
         private IPersonService PersonService => LazyPersonService.Value;
 
-        public PersonController(Lazy<IPersonService> lazyPersonService)
+        public PersonController(IValidator<PersonRequest> personValidator,Lazy<IPersonService> lazyPersonService)
         {
+            this.PersonValidator= personValidator;
             this.LazyPersonService= lazyPersonService;
         }
 
-        // GET: api/<PersonController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        [SwaggerOperation(Summary = "Gets all persons", Description = "Gets all persons")]
+        [SwaggerResponse(200, Description = "Person list", Type = typeof(ICollection<Person>))]
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            try
+            {
+                return Ok(this.PersonService.GetAll());
+            }
+            catch (Exception ex)
+            {
+                return Helper.GetExectionResponse(ex);
+            }
         }
 
         // GET api/<PersonController>/5
         [HttpGet("{id}")]
-        public string Get(string id)
+        [SwaggerOperation(Summary = "Gets a person by id", Description = "Gets a person by id")]
+        [SwaggerResponse(200, Description = "Person information", Type = typeof(Person))]
+        public IActionResult Get(string id)
         {
-            return "value";
+            try
+            {
+                return Ok(this.PersonService.GetById(id));
+            }
+            catch (Exception ex)
+            {
+                return Helper.GetExectionResponse(ex);
+            }
         }
 
         // POST api/<PersonController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [SwaggerOperation(Summary = "Create a person", Description = "Create a person")]
+        [SwaggerResponse(200, Description = "Person created", Type = typeof(Person))]
+        public IActionResult Post([FromBody] PersonRequest personRequest)
         {
-        }
-
-        // PUT api/<PersonController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<PersonController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            try
+            {
+                Helper.CheckValidation(PersonValidator.Validate(personRequest));
+                return Ok(this.PersonService.Create(personRequest));
+            }
+            catch (Exception ex)
+            {
+                return Helper.GetExectionResponse(ex);
+            }
         }
     }
 }

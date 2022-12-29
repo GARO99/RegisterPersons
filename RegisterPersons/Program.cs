@@ -1,7 +1,10 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using RegisterPersons.Data;
 using RegisterPersons.Rules.Contracts;
 using RegisterPersons.Rules.Services;
+using RegisterPersons.Util.Request;
+using RegisterPersons.Util.Validator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +15,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Database connection
-builder.Services.AddDbContext<RegisterPersonsContext>(opt => opt.UseInMemoryDatabase(databaseName: builder.Configuration.GetConnectionString("DefaultConnection")?? ""));
+builder.Services.AddDbContext<RegisterPersonsContext>(opt => opt.UseInMemoryDatabase(databaseName: builder.Configuration.GetConnectionString("DefaultConnection") ?? ""));
+//Validators
+builder.Services.AddScoped<IValidator<PersonRequest>, PersonValidator>();
 //Dependency injection
 builder.Services.AddScoped<IPersonService, PersonService>()
     .AddScoped(serviceProvider => new Lazy<IPersonService>(() => serviceProvider.GetRequiredService<IPersonService>()));
